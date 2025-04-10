@@ -15,6 +15,28 @@ function getNeighbors(coord: Coord, maxX: number, maxY: number): Coord[] {
     return neighbors.filter((neighbor): neighbor is Coord => neighbor !== null);
 }
 
+function fill(coord: Coord, grid: number[][], newColor: number): void {
+    const targetColor = grid[coord.x][coord.y];
+    if (targetColor === newColor) return;
+
+    const queue: Coord[] = [coord];
+    const maxX = grid.length - 1;
+    const maxY = grid[0].length - 1;
+    grid[coord.x][coord.y] = newColor;
+
+    while (queue.length > 0) {
+        const curCoord = queue.shift()!;
+        const neighbors = getNeighbors(curCoord, maxX, maxY);
+
+        neighbors.forEach(n => {
+            if (grid[n.x][n.y] === targetColor) {
+                grid[n.x][n.y] = newColor;
+                queue.push(n);
+            }
+        });
+    }
+}
+
 
 function selectByColor(coord: Coord, grid: number[][]): {elems: Set<String>, col: number} {
     const targetColor = grid[coord.x][coord.y]
